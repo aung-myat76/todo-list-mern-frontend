@@ -1,46 +1,66 @@
-import "./App.css";
+import { useEffect, useState } from "react";
+import Header from "./components/Header";
+import useHttp from "./hooks/useHttp";
+import TodoList from "./components/TodoList";
+import AddTodo from "./components/AddTodo";
+import { type TodoType } from "./components/Todo";
 
-import Header from "./components/Header.tsx";
-import logo from "./assets/react.svg";
-import { useState } from "react";
-import GoalList from "./components/GoalList.tsx";
-import NewGoal from "./components/NewGoal.tsx";
+const App = () => {
+    const { httpState, sendReq } = useHttp<TodoType[]>();
+    const { isLoading, data, error } = httpState;
+    const [todos, setTodos] = useState<TodoType[]>([]);
 
-export type GoalType = {
-    id: number;
-    title: string;
-    description: string;
-};
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await sendReq("http://localhost:5000/api/todos");
+                if (data) {
+                    setTodos(data);
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        fetchData();
+    }, [sendReq]);
 
-function App() {
-    const [goals, setGoals] = useState<GoalType[]>([]);
-
-    const addGoalHanldler = (title: string, description: string) => {
-        setGoals((preGoals) => {
-            const newGoal: GoalType = {
-                id: Math.random(),
-                title: title,
-                description: description,
-            };
-            return [...preGoals, newGoal];
+    const addTodo = (todo: TodoType) => {
+        setTodos((preTodos) => {
+            return [...preTodos, todo];
         });
     };
 
-    const deleteGoalHandler = (id: number) => {
-        setGoals((preGoals) => {
-            return preGoals.filter((goal) => goal.id !== id);
+    const updateTodo = (id: string, todo: TodoType) => {
+        setTodos((preTodos) => {
+            const updatedTodos = [...preTodos];
+            const todoIndex = updatedTodos.findIndex((t) => t.id === id);
+            updatedTodos[todoIndex] = todo;
+            return updatedTodos;
+        });
+    };
+
+    const deleteTodo = (id: string) => {
+        setTodos((preTodos) => {
+            const updatedTodos = preTodos.filter((t) => t.id !== id);
+            return updatedTodos;
         });
     };
 
     return (
-        <main>
-            <Header image={{ src: logo, alt: "a list of goals" }}>
-                <h1>Your Course Goals</h1>
-            </Header>
-            <NewGoal onAddGoal={addGoalHanldler} />
-            <GoalList goals={goals} deleteGoalHandler={deleteGoalHandler} />
-        </main>
+        <>
+            <Header>To do list</Header>
+            <AddTodo onAdd={addTodo} />
+            {isLoading && <p>Loading...</p>}
+            {!isLoading && data && todos.length > 0 && (
+                <TodoList
+                    todos={todos}
+                    updateTodo={updateTodo}
+                    deleteTodo={deleteTodo}
+                />
+            )}
+            {!isLoading && error && <p>{error}</p>}
+        </>
     );
-}
+};
 
 export default App;

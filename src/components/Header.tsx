@@ -1,18 +1,13 @@
-import React, { type FC, type ReactNode } from "react";
+import type { FC, ReactNode } from "react";
 
-type HeaderProps = {
-    image: {
-        src: string;
-        alt: string;
-    };
+type HeaderType = {
     children: ReactNode;
 };
 
-const Header: FC<HeaderProps> = ({ image, children }) => {
+const Header: FC<HeaderType> = ({ children }) => {
     return (
         <header>
-            <img src={image.src} alt={image.alt} />
-            {children}
+            <h1>{children}</h1>
         </header>
     );
 };
