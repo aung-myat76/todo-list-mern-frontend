@@ -5,8 +5,13 @@ import TodoList from "./components/TodoList";
 import AddTodo from "./components/AddTodo";
 import { type TodoType } from "./components/Todo";
 
+import "./App.css";
+
 const App = () => {
-    const { httpState, sendReq } = useHttp<TodoType[]>();
+    const { httpState, sendReq } = useHttp<{
+        todos: TodoType[];
+        message: string;
+    }>();
     const { isLoading, data, error } = httpState;
     const [todos, setTodos] = useState<TodoType[]>([]);
 
@@ -15,7 +20,7 @@ const App = () => {
             try {
                 const data = await sendReq("http://localhost:5000/api/todos");
                 if (data) {
-                    setTodos(data);
+                    setTodos(data.todos);
                 }
             } catch (err) {
                 console.log(err);
@@ -23,6 +28,8 @@ const App = () => {
         };
         fetchData();
     }, [sendReq]);
+
+    console.log(todos);
 
     const addTodo = (todo: TodoType) => {
         setTodos((preTodos) => {

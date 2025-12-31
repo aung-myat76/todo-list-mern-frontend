@@ -1,6 +1,8 @@
-import { useRef, type FC } from "react";
+import { useRef, useState, type FC } from "react";
 import useHttp from "../hooks/useHttp";
 import { type ReqType } from "./AddTodo";
+import { useAnimationControls, motion, spring } from "framer-motion";
+import AnimatedBtn from "./animateBtn";
 
 export type TodoType = {
     id: string;
@@ -21,22 +23,41 @@ const Todo: FC<TodoType & TodoAction> = ({
     deleteTodo
 }) => {
     const isDoneRef = useRef<HTMLInputElement | null>(null);
+    const [checked, setChecked] = useState(false);
     const { sendReq } = useHttp<ReqType>();
+
+    const control = useAnimationControls();
+
+    const todoVariants = {
+        unchecked: {
+            opacity: 1,
+            CSSSkewY: 0,
+            textDecoration: "none"
+        },
+        checked: {
+            opacity: 0.5,
+            y: 10,
+            textDecoration: "line-through"
+        }
+    };
 
     const handleIsDone = async () => {
         const isChecked = isDoneRef.current?.checked ? true : false;
-        const updatedTodo = { id, title, isDone: isChecked };
+        setChecked(isChecked);
         // console.log(updatedTodo);
 
         const data = await sendReq("http://localhost:5000/api/todos", {
             method: "PUT",
             body: {
-                todo: updatedTodo
+                todoId: id,
+                isDone: isChecked
             }
         });
         const todo = await data.todo;
         console.log(todo);
-        updateTodo(id, updatedTodo);
+        if (todo) {
+            updateTodo(todo.id, todo);
+        }
     };
 
     const handleDeleteTodo = async (id: string) => {
@@ -51,8 +72,8 @@ const Todo: FC<TodoType & TodoAction> = ({
             }
         });
 
-        if (data) {
-            deleteTodo(id);
+        if (data.todoId) {
+            deleteTodo(data.todoId);
         }
     };
 
@@ -67,8 +88,25 @@ const Todo: FC<TodoType & TodoAction> = ({
                 checked={isDone}
                 value={id}
             />
-            <label htmlFor={id}>{title}</label>
-            <button onClick={() => handleDeleteTodo(id)}>Remove</button>
+
+            <motion.label
+                variants={todoVariants}
+                animate={checked ? "checked" : "unchecked"}
+                transition={{
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 20,
+                    duration: 1
+                }}
+                htmlFor={id}
+                className={isDone ? "checked" : "unchecked"}>
+                {title}
+            </motion.label>
+            <AnimatedBtn
+                addCls="btn-danger"
+                onClick={() => handleDeleteTodo(id)}>
+                Remove
+            </AnimatedBtn>
         </div>
     );
 };

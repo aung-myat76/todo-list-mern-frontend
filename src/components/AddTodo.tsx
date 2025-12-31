@@ -1,6 +1,9 @@
 import { useRef, type FormEvent, type FC } from "react";
+import { motion, scale } from "framer-motion";
+
 import useHttp from "../hooks/useHttp";
 import { type TodoType } from "./Todo";
+import AnimatedBtn from "./animateBtn";
 
 type AddTodoType = {
     onAdd: (todo: TodoType) => void;
@@ -8,8 +11,8 @@ type AddTodoType = {
 
 export type ReqType = {
     message: string;
-    todos: TodoType[];
     todo?: TodoType;
+    todoId?: string;
 };
 
 const AddTodo: FC<AddTodoType> = ({ onAdd }) => {
@@ -39,8 +42,12 @@ const AddTodo: FC<AddTodoType> = ({ onAdd }) => {
     return (
         <div>
             <form>
-                <input name="title" ref={titleRef} />
-                <button onClick={handleAddTodo}>Add</button>
+                <input
+                    placeholder="write 5 - 50 letters"
+                    name="title"
+                    ref={titleRef}
+                />
+                <AnimatedBtn onClick={handleAddTodo}>Add</AnimatedBtn>
             </form>
         </div>
     );
