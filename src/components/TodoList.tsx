@@ -9,7 +9,7 @@ type TodoListType = {
 
 const TodoList: FC<TodoListType> = ({ todos, updateTodo, deleteTodo }) => {
     return (
-        <>
+        <ul id="todo-list">
             {todos.map((todo) => (
                 <Todo
                     key={todo.id}
@@ -20,7 +20,7 @@ const TodoList: FC<TodoListType> = ({ todos, updateTodo, deleteTodo }) => {
                     deleteTodo={deleteTodo}
                 />
             ))}
-        </>
+        </ul>
     );
 };
 

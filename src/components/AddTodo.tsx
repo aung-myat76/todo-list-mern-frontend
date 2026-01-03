@@ -40,7 +40,7 @@ const AddTodo: FC<AddTodoType> = ({ onAdd }) => {
     };
 
     return (
-        <div>
+        <div id="add-form">
             <form>
                 <input
                     placeholder="write 5 - 50 letters"

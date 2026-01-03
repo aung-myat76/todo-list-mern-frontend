@@ -1,8 +1,10 @@
 import { useRef, useState, type FC } from "react";
 import useHttp from "../hooks/useHttp";
 import { type ReqType } from "./AddTodo";
-import { useAnimationControls, motion, spring } from "framer-motion";
+import { motion } from "framer-motion";
 import AnimatedBtn from "./animateBtn";
+
+import TrashIcon from "../assets/trash.svg?react";
 
 export type TodoType = {
     id: string;
@@ -26,17 +28,13 @@ const Todo: FC<TodoType & TodoAction> = ({
     const [checked, setChecked] = useState(false);
     const { sendReq } = useHttp<ReqType>();
 
-    const control = useAnimationControls();
-
     const todoVariants = {
         unchecked: {
             opacity: 1,
-            CSSSkewY: 0,
             textDecoration: "none"
         },
         checked: {
             opacity: 0.5,
-            y: 10,
             textDecoration: "line-through"
         }
     };
@@ -78,36 +76,40 @@ const Todo: FC<TodoType & TodoAction> = ({
     };
 
     return (
-        <div id={id}>
-            <input
-                ref={isDoneRef}
-                onChange={handleIsDone}
-                id={id}
-                name="isDone"
-                type="checkbox"
-                checked={isDone}
-                value={id}
-            />
+        <li id={id}>
+            <div>
+                <input
+                    ref={isDoneRef}
+                    onChange={handleIsDone}
+                    id={id}
+                    name="isDone"
+                    type="checkbox"
+                    checked={isDone}
+                    value={id}
+                />
 
-            <motion.label
-                variants={todoVariants}
-                animate={checked ? "checked" : "unchecked"}
-                transition={{
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 20,
-                    duration: 1
+                <motion.label
+                    variants={todoVariants}
+                    animate={checked || isDone ? "checked" : "unchecked"}
+                    transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 20,
+                        duration: 1
+                    }}
+                    htmlFor={id}>
+                    {title.length > 25 ? title.slice(0, 25) + "..." : title}
+                </motion.label>
+            </div>
+            <TrashIcon
+                onClick={() => handleDeleteTodo(id)}
+                style={{
+                    color: "red",
+                    width: "20px",
+                    height: "20px"
                 }}
-                htmlFor={id}
-                className={isDone ? "checked" : "unchecked"}>
-                {title}
-            </motion.label>
-            <AnimatedBtn
-                addCls="btn-danger"
-                onClick={() => handleDeleteTodo(id)}>
-                Remove
-            </AnimatedBtn>
-        </div>
+            />
+        </li>
     );
 };
 
