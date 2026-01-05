@@ -38,10 +38,11 @@ const useHttp = <T = unknown,>() => {
 
                 const res = await fetch(url, reqObj);
 
-                const data: T = await res.json();
                 if (!res.ok) {
-                    throw new Error(data.message);
+                    const msg = await res.json();
+                    throw new Error(msg.message);
                 }
+                const data: T = await res.json();
                 setHttpState((preState) => {
                     return { ...preState, isLoading: false, data: data };
                 });

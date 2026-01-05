@@ -1,12 +1,12 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 import type { FC, ReactNode } from "react";
 
-const backdropVariants = {
+const backdropVariants: Variants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 }
 };
 
-const modalVariants = {
+const modalVariants: Variants = {
     hidden: { opacity: 0, y: "-50px", scale: 0.95 },
     visible: {
         opacity: 1,
