@@ -48,7 +48,7 @@ const Todo: FC<TodoType & TodoAction> = ({
         // console.log(updatedTodo);
 
         const data = await sendReq(
-            baseURL || "http://localhost:5000/api/todos",
+            baseURL || "http://localhost:5000" + "/api/todos",
             {
                 method: "PUT",
                 body: {
@@ -66,7 +66,7 @@ const Todo: FC<TodoType & TodoAction> = ({
 
     const handleDeleteTodo = async (id: string) => {
         const data = await sendReq(
-            baseURL || "http://localhost:5000/api/todos",
+            baseURL || "http://localhost:5000" + "/api/todos",
             {
                 method: "DELETE",
                 body: {

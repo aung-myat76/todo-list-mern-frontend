@@ -21,7 +21,7 @@ const App = () => {
         const fetchData = async () => {
             try {
                 const data = await sendReq(
-                    baseURL || "http://localhost:5000/api/todos"
+                    baseURL || "http://localhost:5000" + "/api/todos"
                 );
                 if (data) {
                     setTodos(data.todos);

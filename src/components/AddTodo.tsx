@@ -24,7 +24,7 @@ const AddTodo: FC<AddTodoType> = ({ onAdd }) => {
         e.preventDefault();
 
         const data = await sendReq(
-            baseURL || "http://localhost:5000/api/todos",
+            baseURL || "http://localhost:5000" + "/api/todos",
             {
                 method: "POST",
                 body: {
