@@ -57,7 +57,7 @@ const App = () => {
         <>
             <Header>To do list</Header>
             <AddTodo onAdd={addTodo} />
-            {isLoading && <p>Loading...</p>}
+            {isLoading && <p className="container">Loading...</p>}
             {!isLoading && data && todos.length > 0 && (
                 <TodoList
                     todos={todos}
@@ -65,7 +65,7 @@ const App = () => {
                     deleteTodo={deleteTodo}
                 />
             )}
-            {!isLoading && error && <p>{error}</p>}
+            {!isLoading && error && <p className="container">{error}</p>}
         </>
     );
 };

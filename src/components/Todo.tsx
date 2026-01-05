@@ -2,7 +2,7 @@ import { useRef, useState, type FC } from "react";
 import useHttp from "../hooks/useHttp";
 import { type ReqType } from "./AddTodo";
 import { motion } from "framer-motion";
-import AnimatedBtn from "./animateBtn";
+import Modal from "./Modal";
 
 import TrashIcon from "../assets/trash.svg?react";
 
@@ -27,6 +27,7 @@ const Todo: FC<TodoType & TodoAction> = ({
     const isDoneRef = useRef<HTMLInputElement | null>(null);
     const [checked, setChecked] = useState(false);
     const { sendReq } = useHttp<ReqType>();
+    const [isOpen, setIsOpen] = useState(false);
 
     const todoVariants = {
         unchecked: {
@@ -59,10 +60,6 @@ const Todo: FC<TodoType & TodoAction> = ({
     };
 
     const handleDeleteTodo = async (id: string) => {
-        if (!confirm("Are you sure to Delete?")) {
-            return;
-        }
-
         const data = await sendReq("http://localhost:5000/api/todos", {
             method: "DELETE",
             body: {
@@ -75,41 +72,59 @@ const Todo: FC<TodoType & TodoAction> = ({
         }
     };
 
-    return (
-        <li id={id}>
-            <div>
-                <input
-                    ref={isDoneRef}
-                    onChange={handleIsDone}
-                    id={id}
-                    name="isDone"
-                    type="checkbox"
-                    checked={isDone}
-                    value={id}
-                />
+    const handleDeleteConfirm = () => {
+        handleDeleteTodo(id);
+        setIsOpen(false);
+    };
 
-                <motion.label
-                    variants={todoVariants}
-                    animate={checked || isDone ? "checked" : "unchecked"}
-                    transition={{
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 20,
-                        duration: 1
+    return (
+        <>
+            <Modal
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                onConfirm={handleDeleteConfirm}
+                title="Deleting...">
+                <p>Are you sure to delete this?</p>
+            </Modal>
+            <li id={id}>
+                <div>
+                    <motion.input
+                        ref={isDoneRef}
+                        onChange={handleIsDone}
+                        id={id}
+                        name="isDone"
+                        type="checkbox"
+                        checked={isDone}
+                        value={id}
+                        whileHover={{ scale: 1.25, rotate: 45 }}
+                        whileTap={{ scale: 1.25, rotate: 45 }}
+                    />
+
+                    <motion.label
+                        variants={todoVariants}
+                        animate={checked || isDone ? "checked" : "unchecked"}
+                        transition={{
+                            type: "spring",
+                            stiffness: 300,
+                            damping: 20,
+                            duration: 1
+                        }}
+                        htmlFor={id}>
+                        {title.length > 25 ? title.slice(0, 25) + "..." : title}
+                    </motion.label>
+                </div>
+                <TrashIcon
+                    onClick={() => setIsOpen(true)}
+                    // onClick={() => handleDeleteTodo(id)}
+                    className="trash-icon"
+                    style={{
+                        color: "red",
+                        width: "15px",
+                        height: "15px"
                     }}
-                    htmlFor={id}>
-                    {title.length > 25 ? title.slice(0, 25) + "..." : title}
-                </motion.label>
-            </div>
-            <TrashIcon
-                onClick={() => handleDeleteTodo(id)}
-                style={{
-                    color: "red",
-                    width: "20px",
-                    height: "20px"
-                }}
-            />
-        </li>
+                />
+            </li>
+        </>
     );
 };
 

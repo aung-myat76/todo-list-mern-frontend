@@ -22,7 +22,7 @@ const useHttp = <T = unknown,>() => {
     const sendReq = useCallback(
         async (url: string, options?: UseHttpOptionsType) => {
             setHttpState((preState) => {
-                return { ...preState, isLoading: true };
+                return { ...preState, isLoading: true, error: null };
             });
             try {
                 const reqObj: RequestInit = {
@@ -38,11 +38,10 @@ const useHttp = <T = unknown,>() => {
 
                 const res = await fetch(url, reqObj);
 
-                if (!res.ok) {
-                    throw new Error("Could not fetch the data");
-                }
-
                 const data: T = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.message);
+                }
                 setHttpState((preState) => {
                     return { ...preState, isLoading: false, data: data };
                 });

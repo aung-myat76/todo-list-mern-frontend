@@ -16,7 +16,7 @@ export type ReqType = {
 };
 
 const AddTodo: FC<AddTodoType> = ({ onAdd }) => {
-    const { sendReq } = useHttp<ReqType>();
+    const { sendReq, httpState } = useHttp<ReqType>();
     const titleRef = useRef<HTMLInputElement | null>(null);
 
     const handleAddTodo = async (e: FormEvent) => {
@@ -32,15 +32,10 @@ const AddTodo: FC<AddTodoType> = ({ onAdd }) => {
             onAdd(data.todo);
         }
         titleRef!.current!.value = "";
-        // onAdd({
-        //     title: titleRef.current!.value,
-        //     id: Math.random().toString(),
-        //     isDone: false,
-        // });
     };
 
     return (
-        <div id="add-form">
+        <div className="container" id="add-form">
             <form>
                 <input
                     placeholder="write 5 - 50 letters"
@@ -49,6 +44,7 @@ const AddTodo: FC<AddTodoType> = ({ onAdd }) => {
                 />
                 <AnimatedBtn onClick={handleAddTodo}>Add</AnimatedBtn>
             </form>
+            {httpState.error && <p className="error">{httpState.error}</p>}
         </div>
     );
 };

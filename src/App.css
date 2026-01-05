@@ -9,7 +9,22 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+/* check box */
+
 /* ultility class */
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.error {
+    color: #cf0f0f;
+    padding: 0.25rem;
+    font-size: 0.8rem;
+}
 
 .btn {
     padding: 0.5rem;
@@ -60,6 +75,7 @@ body {
     padding: 0.5rem;
     border-radius: 5px;
     margin-right: 5px;
+    accent-color: #00ff00;
 }
 
 #add-form input:focus {
@@ -82,9 +98,55 @@ body {
     padding: 0.25rem;
     width: 100%;
     margin-bottom: 0.5rem;
-    border-bottom: 1px #333 solid;
+    box-shadow: 1px 1px 5px 2px #f0f0f0;
+    border-radius: 5px;
+}
+
+#todo-list li .trash-icon {
+    min-width: 15px;
+    min-height: 15px;
 }
 
 #todo-list li div > * {
     margin-right: 0.5rem;
+}
+
+/* modal */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h2 {
+    margin-bottom: 0.9rem;
+}
+
+.actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.close-btn,
+.confirm-btn {
+    margin-top: 1rem;
+    padding: 0.2rem 0.4rem;
+    cursor: pointer;
 }
