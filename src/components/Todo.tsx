@@ -17,6 +17,8 @@ type TodoAction = {
     deleteTodo: (id: string) => void;
 };
 
+const baseURL = import.meta.env.VITE_API_URL;
+
 const Todo: FC<TodoType & TodoAction> = ({
     id,
     title,
@@ -45,13 +47,16 @@ const Todo: FC<TodoType & TodoAction> = ({
         setChecked(isChecked);
         // console.log(updatedTodo);
 
-        const data = await sendReq("http://localhost:5000/api/todos", {
-            method: "PUT",
-            body: {
-                todoId: id,
-                isDone: isChecked
+        const data = await sendReq(
+            baseURL || "http://localhost:5000/api/todos",
+            {
+                method: "PUT",
+                body: {
+                    todoId: id,
+                    isDone: isChecked
+                }
             }
-        });
+        );
         const todo = await data.todo;
         console.log(todo);
         if (todo) {
@@ -60,12 +65,15 @@ const Todo: FC<TodoType & TodoAction> = ({
     };
 
     const handleDeleteTodo = async (id: string) => {
-        const data = await sendReq("http://localhost:5000/api/todos", {
-            method: "DELETE",
-            body: {
-                todoId: id
+        const data = await sendReq(
+            baseURL || "http://localhost:5000/api/todos",
+            {
+                method: "DELETE",
+                body: {
+                    todoId: id
+                }
             }
-        });
+        );
 
         if (data.todoId) {
             deleteTodo(data.todoId);

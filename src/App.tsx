@@ -7,6 +7,8 @@ import { type TodoType } from "./components/Todo";
 
 import "./App.css";
 
+const baseURL = import.meta.env.VITE_API_URL;
+
 const App = () => {
     const { httpState, sendReq } = useHttp<{
         todos: TodoType[];
@@ -18,7 +20,9 @@ const App = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data = await sendReq("http://localhost:5000/api/todos");
+                const data = await sendReq(
+                    baseURL || "http://localhost:5000/api/todos"
+                );
                 if (data) {
                     setTodos(data.todos);
                 }

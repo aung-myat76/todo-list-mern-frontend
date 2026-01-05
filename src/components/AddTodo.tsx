@@ -1,9 +1,10 @@
 import { useRef, type FormEvent, type FC } from "react";
-import { motion, scale } from "framer-motion";
 
 import useHttp from "../hooks/useHttp";
 import { type TodoType } from "./Todo";
-import AnimatedBtn from "./animateBtn";
+import AnimatedBtn from "./AnimateBtn";
+
+const baseURL = import.meta.env.VITE_API_URL;
 
 type AddTodoType = {
     onAdd: (todo: TodoType) => void;
@@ -22,12 +23,15 @@ const AddTodo: FC<AddTodoType> = ({ onAdd }) => {
     const handleAddTodo = async (e: FormEvent) => {
         e.preventDefault();
 
-        const data = await sendReq("http://localhost:5000/api/todos", {
-            method: "POST",
-            body: {
-                title: titleRef.current?.value
+        const data = await sendReq(
+            baseURL || "http://localhost:5000/api/todos",
+            {
+                method: "POST",
+                body: {
+                    title: titleRef.current?.value
+                }
             }
-        });
+        );
         if (data.todo) {
             onAdd(data.todo);
         }
